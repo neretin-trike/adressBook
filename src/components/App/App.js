@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-class AdressList extends Component {
+class AddressList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,7 +37,7 @@ class AdressList extends Component {
       return <div>Загрузка...</div>;
     } else {
       return (
-        <table>
+        <table className="Address-List" >
           <thead>
             <tr>
               <th>ID</th>
@@ -51,10 +51,11 @@ class AdressList extends Component {
           <tbody>
             {items.map(item => (
               <tr key={item.index}>
+                  <td>{item.index}</td>
                   <td>{item.name}</td>
                   <td>{item.surname}</td>
                   <td>{item.middlename}</td>
-                  <td>{item.adress}</td>
+                  <td>{item.address}</td>
                   <td>{item.phone}</td>
               </tr>
             ))}
@@ -73,7 +74,7 @@ class App extends Component {
           <h2>Адресная книга посетителей</h2>
         </header>
         <main className="App-main">
-          <AdressList />
+          <AddressList />
         </main>
       </div>
     );
