@@ -9,14 +9,25 @@
 }
 
 .App-header {
+  background-color: #ff0052;
+}
+
+.App-header h2 {
+  margin: 0;
+  padding: 20px 0;
+  color: white;
+}
+
+.App-main {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+
+  max-width: 1070px;
 }
 
 .App-link {
