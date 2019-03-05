@@ -76,16 +76,61 @@ class AddressList extends Component {
   }
 }
 
+class ModalDialog extends Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    const {children} = this.props;
+    console.dir(children);
+
+    return (
+      <div className="Modal-Overlay">
+        {children}
+      </div>
+      )
+  }
+
+}
+
 class AddItemButton extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {showModal: false};
+    this.onClickHandle = this.onClickHandle.bind(this);
+  }
+
+  onClickHandle(e) {
+    this.props.onModalShow();
+  }
+
   render() {
     return (
-      <button className="Add-Item Button" >{this.props.name}</button>
+      <button onClick={this.onClickHandle} className="Add-Item Button" >{this.props.name}</button>
     )
   }
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showModal: false,
+    };
+
+    this.onModalShow = this.onModalShow.bind(this);
+  }
+
+  onModalShow(){
+    this.setState({showModal: true});
+  }
+  
   render() {
+    const { showModal } = this.state;
+
     return (
       <div className="App">
         <header className="App-header">
@@ -93,14 +138,29 @@ class App extends Component {
         </header>
         <main className="App-main">
           <article className="Container">
-            <section className="Address-List" >
+              <section className="Address-List" >
                 <AddressList />
               </section>
               <nav className="Item-nav">
-                <AddItemButton name="Добавить"/>
+                <AddItemButton onModalShow = {this.onModalShow} showModal={showModal} name="Добавить"/>
               </nav>
           </article>
         </main>
+        {showModal &&
+          <ModalDialog>
+            <section className="Modal-Window">
+              <h3>Добавить новую запись</h3>
+              <form>
+                <label>Имя<input/></label>
+                <label>Фамилия<input/></label>
+                <label>Отчество<input/></label>
+                <label>Адрес<input/></label>
+                <label>Номер<input/></label>
+                <input type="button" value="Закрыть"/>
+                <input type="submit" value="Добавить"/>
+              </form>
+            </section>
+          </ModalDialog>}
       </div>
     );
   }

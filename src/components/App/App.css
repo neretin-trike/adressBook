@@ -68,3 +68,25 @@ html, body, #root {
 .Button:hover {
   background-color: #cc0041;
 }
+
+.Modal-Overlay {
+  position: fixed;
+  width: 100%;;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.Modal-Window {
+  width: 350px;
+  height: 350px;
+
+  background-color: white;
+}
+
+.Modal-Window label {
+  display: block;
+}
