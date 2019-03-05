@@ -22,25 +22,49 @@ html, body, #root {
 .App-main {
   background-color: #282c34;
   flex: 1 0 auto;
-  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.Container {
+  margin: 40px auto;
+  max-width: 657px;
 }
 
 .Address-List {
-  border: 2px solid white;
+
+}
+
+.Address-Table {
+  margin: 0 auto;
   border-collapse: collapse;
 }
 
-.Address-List th,
-.Address-List td{
+.Address-Table th,
+.Address-Table td{
   padding: 20px;
   border: 2px solid #ff0052;
+}
+
+.Address-Item:hover {
+  cursor: default;
+  background: #ff00513f;
+}
+
+.Item-nav {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Button {
+  cursor: pointer;
+  padding: 10px;
+  color:white;
+  background-color: #ff0052;
+  border-color: transparent;
+}
+
+.Button:hover {
+  background-color: #cc0041;
 }

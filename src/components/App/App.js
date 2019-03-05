@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as ReactDOM from "react-dom";
 // import logo from './logo.svg';
 import './App.css';
 
@@ -6,7 +7,7 @@ class AddressItem extends Component {
   render() {
     const item = this.props.item;
     return (
-      <tr>
+      <tr className="Address-Item">
           <td>{item.index}</td>
           <td>{item.name}</td>
           <td>{item.surname}</td>
@@ -53,7 +54,7 @@ class AddressList extends Component {
       return <div>Загрузка...</div>;
     } else {
       return (
-        <table className="Address-List" >
+        <table className="Address-Table" >
           <thead>
             <tr>
               <th>ID</th>
@@ -75,6 +76,14 @@ class AddressList extends Component {
   }
 }
 
+class AddItemButton extends Component {
+  render() {
+    return (
+      <button className="Add-Item Button" >{this.props.name}</button>
+    )
+  }
+}
+
 class App extends Component {
   render() {
     return (
@@ -83,7 +92,14 @@ class App extends Component {
           <h2>Адресная книга посетителей</h2>
         </header>
         <main className="App-main">
-          <AddressList />
+          <article className="Container">
+            <section className="Address-List" >
+                <AddressList />
+              </section>
+              <nav className="Item-nav">
+                <AddItemButton name="Добавить"/>
+              </nav>
+          </article>
         </main>
       </div>
     );
