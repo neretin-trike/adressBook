@@ -2,6 +2,10 @@ html, body, #root {
   height: 100%;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .App {
   display: flex;
   flex-direction: column;
@@ -81,12 +85,39 @@ html, body, #root {
 }
 
 .Modal-Window {
-  width: 350px;
-  height: 350px;
+  border: 10px solid #ff0052;
+  background-color: #282c34;
+  width: 400px;
+  padding: 25px;
+  color: rgba(255, 255, 255, 0.65);
+}
 
-  background-color: white;
+.Modal-Window h3 {
+  margin-top: 0;
+  color:white;
 }
 
 .Modal-Window label {
+  text-align: left;
   display: block;
+}
+
+.Modal-Window label input {
+  display: block;
+  width: 100%;
+  border: 2px solid #ff0052;
+  background-color: transparent;
+  color: white;
+  padding: 5px;
+  margin: 5px 0;
+}
+
+.Modal-Window .ModalBtn-nav {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.Modal-Window .Button {
+  margin-left: 10px;
 }
