@@ -98,7 +98,6 @@ class AddItemButton extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {showModal: false};
     this.onClickHandle = this.onClickHandle.bind(this);
   }
 
@@ -118,12 +117,17 @@ class App extends Component {
     super(props);
 
     this.state = {
-      showModal: false,
+      showModal: true,
     };
 
     this.onModalShow = this.onModalShow.bind(this);
+    this.onModalClose = this.onModalClose.bind(this);
+
   }
 
+  onModalClose(){
+    this.setState({showModal: false});
+  }
   onModalShow(){
     this.setState({showModal: true});
   }
@@ -134,7 +138,7 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <h2>Адресная книга посетителей</h2>
+          <h2>Адресная книга посетителей на ReactJS</h2>
         </header>
         <main className="App-main">
           <article className="Container">
@@ -142,7 +146,7 @@ class App extends Component {
                 <AddressList />
               </section>
               <nav className="Item-nav">
-                <AddItemButton onModalShow = {this.onModalShow} showModal={showModal} name="Добавить"/>
+                <AddItemButton onModalShow={this.onModalShow} showModal={showModal} name="Добавить запись"/>
               </nav>
           </article>
         </main>
@@ -156,8 +160,10 @@ class App extends Component {
                 <label>Отчество<input/></label>
                 <label>Адрес<input/></label>
                 <label>Номер<input/></label>
-                <input type="button" value="Закрыть"/>
-                <input type="submit" value="Добавить"/>
+                <nav className="ModalBtn-nav">
+                  <input className="Button" type="button" onClick={this.onModalClose} value="Закрыть"/>
+                  <input className="Button" type="submit" value="Добавить"/>
+                </nav>
               </form>
             </section>
           </ModalDialog>}
