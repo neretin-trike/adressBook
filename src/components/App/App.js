@@ -1,6 +1,22 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+
+class AddressItem extends Component {
+  render() {
+    const item = this.props.item;
+    return (
+      <tr>
+          <td>{item.index}</td>
+          <td>{item.name}</td>
+          <td>{item.surname}</td>
+          <td>{item.middlename}</td>
+          <td>{item.address}</td>
+          <td>{item.phone}</td>
+      </tr>
+    )
+  }
+}
 
 class AddressList extends Component {
   constructor(props) {
@@ -50,14 +66,7 @@ class AddressList extends Component {
           </thead>
           <tbody>
             {items.map(item => (
-              <tr key={item.index}>
-                  <td>{item.index}</td>
-                  <td>{item.name}</td>
-                  <td>{item.surname}</td>
-                  <td>{item.middlename}</td>
-                  <td>{item.address}</td>
-                  <td>{item.phone}</td>
-              </tr>
+              <AddressItem key={item.index} item={item} />
             ))}
           </tbody>
         </table>
