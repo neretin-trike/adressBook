@@ -1,9 +1,15 @@
 html, body, #root {
   height: 100%;
 }
-
 * {
   box-sizing: border-box;
+}
+
+:root {
+  --main-color: #cc0041;
+  --main-color-darken: #8a022d;
+
+  /* --main-color: #cc0041; */
 }
 
 .App {
@@ -15,7 +21,7 @@ html, body, #root {
 
 .App-header {
   flex-shrink: 0;
-  background-color: #ff0052;
+  background-color: var(--main-color);
 }
 
 .App-header h2 {
@@ -47,12 +53,12 @@ html, body, #root {
 .Address-Table th,
 .Address-Table td{
   padding: 20px;
-  border: 2px solid #ff0052;
+  border: 2px solid var(--main-color);
 }
 
 .Address-Item:hover {
   cursor: default;
-  background: #ff00513f;
+  background: var(--main-color-darken);
 }
 
 .Item-nav {
@@ -65,12 +71,12 @@ html, body, #root {
   cursor: pointer;
   padding: 10px;
   color:white;
-  background-color: #ff0052;
+  background-color: var(--main-color);
   border-color: transparent;
 }
 
 .Button:hover {
-  background-color: #cc0041;
+  background-color: var(--main-color-darken);
 }
 
 .Modal-Overlay {
@@ -85,7 +91,7 @@ html, body, #root {
 }
 
 .Modal-Window {
-  border: 10px solid #ff0052;
+  border: 10px solid var(--main-color);
   background-color: #282c34;
   width: 400px;
   padding: 25px;
@@ -105,7 +111,7 @@ html, body, #root {
 .Modal-Window label input {
   display: block;
   width: 100%;
-  border: 2px solid #ff0052;
+  border: 2px solid var(--main-color);
   background-color: transparent;
   color: white;
   padding: 5px;

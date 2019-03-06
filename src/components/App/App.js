@@ -25,7 +25,7 @@ class AddressList extends Component {
     this.state = {
       error: null,
       isLoaded: false,
-      items: []
+      items: [],
     };
   }
   componentDidMount() {
@@ -33,6 +33,7 @@ class AddressList extends Component {
       .then( res => res.json() )
       .then(
         (result) => {
+          console.dir(result[0]);
           this.setState({
             isLoaded: true,
             items: result
@@ -45,6 +46,11 @@ class AddressList extends Component {
           });
         }
       )
+  }
+  addRow() {
+    let items = this.state.items;
+    items.push();
+    this.setState({items: items});
   }
   render() {
     const { error, isLoaded, items } = this.state;
@@ -83,8 +89,6 @@ class ModalDialog extends Component {
 
   render() {
     const {children} = this.props;
-    console.dir(children);
-
     return (
       <div className="Modal-Overlay">
         {children}
@@ -112,6 +116,48 @@ class AddItemButton extends Component {
   }
 }
 
+class ModalWindow extends Component {
+  constructor(props) {
+    super(props);
+    this.onClickHandle = this.onClickHandle.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
+
+    this.state = {
+      firstName: "1",
+      lastName: "2",
+      patronymicName: "3",
+      address: "4",
+      phone: "5"
+    }
+  }
+  onInputChange(event) {
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({[name]: value});
+  }
+  onClickHandle(e) {
+    this.props.onModalClose();
+  }
+  render() {
+    return (
+      <section className="Modal-Window">
+        <h3>Добавить новую запись</h3>
+        <form>
+          <label>Имя<input name="firstName" value={this.state.firstName} onChange={this.onInputChange}/></label>
+          <label>Фамилия<input name="lastName" value={this.state.lastName} onChange={this.onInputChange}/></label>
+          <label>Отчество<input name="patronymicName" value={this.state.patronymicName} onChange={this.onInputChange}/></label>
+          <label>Адрес<input name="address" value={this.state.address} onChange={this.onInputChange}/></label>
+          <label>Номер<input name="phone" value={this.state.phone} onChange={this.onInputChange}/></label>
+          <nav className="ModalBtn-nav">
+            <input className="Button" type="button" onClick={this.onClickHandle} value="Закрыть"/>
+            <input className="Button" type="submit" value="Добавить"/>
+          </nav>
+        </form>
+      </section>
+    )
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -122,7 +168,6 @@ class App extends Component {
 
     this.onModalShow = this.onModalShow.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
-
   }
 
   onModalClose(){
@@ -152,20 +197,7 @@ class App extends Component {
         </main>
         {showModal &&
           <ModalDialog>
-            <section className="Modal-Window">
-              <h3>Добавить новую запись</h3>
-              <form>
-                <label>Имя<input/></label>
-                <label>Фамилия<input/></label>
-                <label>Отчество<input/></label>
-                <label>Адрес<input/></label>
-                <label>Номер<input/></label>
-                <nav className="ModalBtn-nav">
-                  <input className="Button" type="button" onClick={this.onModalClose} value="Закрыть"/>
-                  <input className="Button" type="submit" value="Добавить"/>
-                </nav>
-              </form>
-            </section>
+            <ModalWindow onModalClose={this.onModalClose} />
           </ModalDialog>}
       </div>
     );
