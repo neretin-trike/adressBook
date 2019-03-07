@@ -47,19 +47,23 @@ class AddressList extends Component {
       )
   }
   addRow(object) {
-    let items = this.state.items;
-    items.push(object);
-    this.setState({items: items});
-
     this.props.onAddItem(null);
 
     let formData = new FormData;
-    formData.append("item", JSON.stringify(object));
+    formData.append("Index", object.index);
+    formData.append("Name", object.name);
+    formData.append("Surname", object.surname);
+    formData.append("Middlename", object.middlename);
+    formData.append("Address", object.address);
+    formData.append("Phone", object.phone);
+
     fetch("http://localhost:22080/api/address/add", {method:"POST", body: formData})
       .then( res => res.json() )
       .then(
         (result) => {
-          alert(result);
+          let items = this.state.items;
+          items.push(object);
+          this.setState({items: items});
         },
         (error) => {
           alert(error);
