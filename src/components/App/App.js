@@ -54,7 +54,7 @@ class AddressList extends Component {
     this.props.onAddItem(null);
 
     let formData = new FormData;
-    formData.append("item", object);
+    formData.append("item", JSON.stringify(object));
     fetch("http://localhost:22080/api/address/add", {method:"POST", body: formData})
       .then( res => res.json() )
       .then(
