@@ -244,7 +244,14 @@ class App extends Component {
               <h3>Поиск посетителей</h3>
               <AppSearch filterText={filterText} onFilterTextChange={this.onFilterTextChange}/>
               <h3>Таблица посетителей</h3>
-              <AddressList items={items} filterText={filterText} />
+              <Router>
+                <Switch>
+                  <Route exact path="/" children={()=> <AddressList items={items} filterText={filterText} /> } /> 
+                  <Route exact path="/info/" children={()=><h2>Карточка посетителя</h2>} />
+                  <Route children={()=><h2>Адрес не найден</h2>} />
+                </Switch>
+              </Router>
+              {/* <AddressList items={items} filterText={filterText} /> */}
               <nav className="Item-nav">
                 <AddItemButton onModalShow={this.onModalShow} showModal={showModal} name="Добавить запись"/>
               </nav>
