@@ -187,7 +187,7 @@ class App extends Component {
     super(props);
 
     this.state = {
-      showModal: true,
+      showModal: false,
       item: null,
     };
 
@@ -215,6 +215,9 @@ class App extends Component {
         </header>
         <main className="App-main">
           <article className="Container">
+              <form className="Address-search">
+                <input type="search"></input>
+              </form>
               <section className="Address-List" >
                 <AddressList onAddItem={this.onAddItem} newItem={item}/>
               </section>

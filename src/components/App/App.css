@@ -127,3 +127,23 @@ html, body, #root {
 .Modal-Window .Button {
   margin-left: 10px;
 }
+
+.svg-icon {
+  fill: red;
+}
+
+.Address-search input{
+  width: 100%;
+  border: 2px solid var(--main-color);
+  background-color: transparent;
+  background-image: url(../../images/search.svg);
+  background-repeat: no-repeat;
+  background-position: 99% center;
+  background-size: 2.5%;
+
+  color: white;
+  padding: 5px;
+  padding-right: 30px;
+  margin-bottom: 20px;
+
+}
