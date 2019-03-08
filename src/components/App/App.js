@@ -16,8 +16,8 @@ class AddressItem extends Component {
             <td>{item.name}</td>
             <td>{item.surname}</td>
             <td>{item.middlename}</td>
-            <td>{item.address}</td>
-            <td>{item.phone}</td>
+            {/* <td>{item.address}</td>
+            <td>{item.phone}</td> */}
         </tr>
     )
   }
@@ -39,8 +39,8 @@ class AddressList extends Component {
                 <th>Имя</th>
                 <th>Фамилия</th>
                 <th>Отчество</th>
-                <th>Адрес</th>
-                <th>Номер</th>
+                {/* <th>Адрес</th>
+                <th>Номер</th> */}
               </tr>
             </thead>
             <tbody>
@@ -157,6 +157,77 @@ class AppSearch extends Component {
   }
 }
 
+class AddressItemCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      error: null,
+      isLoaded: false,
+      items: [],
+    };
+  }
+  componentDidMount() {
+    const index = this.props.match.params.index;
+    console.log(index);
+    fetch("http://localhost:22080/api/address/info?addressIndex="+index, {method:"GET"})
+      .then( res => res.json() )
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            item: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
+  }
+  render() {
+    const { error, isLoaded, item } = this.state;
+    if (error) {
+      return <div>Ошибка: {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Загрузка...</div>;
+    } else {
+      return (
+        <div>
+          <h3>Карточка посетителя</h3>
+          <section className="App-AdreesItemCard">
+          <article className="field">
+              <header className="caption">Индекс</header>
+              <p className="content">{item.index}</p> 
+            </article>
+            <article className="field">
+              <header className="caption">Имя</header>
+              <p className="content">{item.name}</p> 
+            </article>
+            <article className="field">
+              <header className="caption">Фамилия</header>
+              <p className="content">{item.surname}</p> 
+            </article>
+            <article className="field">
+              <header className="caption">Отчество</header>
+              <p className="content">{item.middlename}</p> 
+            </article>
+            <article className="field">
+              <header className="caption">Адрес</header>
+              <p className="content">{item.address}</p> 
+            </article>
+            <article className="field">
+              <header className="caption">Телефон</header>
+              <p className="content">{item.phone}</p> 
+            </article>
+          </section>
+        </div>
+      )
+    }
+  }
+} 
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -249,8 +320,8 @@ class App extends Component {
               <h3>Таблица посетителей</h3>
               <Router>
                 <Switch>
-                  <Route exact path="/" children={()=> <AddressList items={items} filterText={filterText} /> } /> 
-                  <Route exact path="/address/:index" children={()=><h2>Карточка посетителя</h2>} />
+                  <Route exact path="/address" render={()=> <AddressList items={items} filterText={filterText} /> } /> 
+                  <Route exact path="/address/:index(\d+)" render={(props) => <AddressItemCard {...props}/>} />
                   <Route children={()=><h2>Адрес не найден</h2>} />
                 </Switch>
               </Router>
