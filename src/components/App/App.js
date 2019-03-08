@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import * as ReactDOM from "react-dom";
-// import logo from './logo.svg';
 import './App.css';
+import * as ReactRouterDOM from "react-router-dom";
+
+const Router = ReactRouterDOM.BrowserRouter;
+const Route = ReactRouterDOM.Route;
+const Switch = ReactRouterDOM.Switch;
 
 class AddressItem extends Component {
   render() {
@@ -21,25 +24,33 @@ class AddressItem extends Component {
 
 class AddressList extends Component {
   render() {
+      const filterText = this.props.filterText;
       const items = this.props.items;
+
       return (
-        <table className="Address-Table" >
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Имя</th>
-              <th>Фамилия</th>
-              <th>Отчество</th>
-              <th>Адрес</th>
-              <th>Номер</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map(item => (
-              <AddressItem key={item.index} item={item} />
-            ))}
-          </tbody>
-        </table>
+        <section className="Address-List" >
+          <table className="Address-Table" >
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Фамилия</th>
+                <th>Отчество</th>
+                <th>Адрес</th>
+                <th>Номер</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(item => {
+                if (item.name.indexOf(filterText) === -1) {
+                  return;
+                }
+                return <AddressItem key={item.index} item={item} />
+              }
+              )}
+            </tbody>
+          </table>
+        </section>
       );
     }
 }
@@ -123,22 +134,44 @@ class ModalWindow extends Component {
   }
 }
 
+class AppSearch extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+  }
+
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+
+  render() {
+    return (
+      <form className="Address-search">
+        <input type="search" value={this.props.filterText} onChange={this.handleFilterTextChange} ></input>
+      </form>
+    )
+  }
+}
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       showModal: false,
-      item: null,
 
       error: null,
       isLoaded: false,
       items: [],
+
+      filterText: ""
     };
 
     this.onModalShow = this.onModalShow.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
+    this.onFilterTextChange = this.onFilterTextChange.bind(this);
   }
 
   componentDidMount() {
@@ -188,9 +221,14 @@ class App extends Component {
         }
       )
   }
+  onFilterTextChange(filterText) {
+    this.setState({
+      filterText: filterText
+    });
+  }
 
   render() {
-    const { showModal, item, error, isLoaded, items, newItem  } = this.state;
+    const { showModal, filterText, error, isLoaded, items } = this.state;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } else if (!isLoaded) {
@@ -203,12 +241,10 @@ class App extends Component {
         </header>
         <main className="App-main">
           <article className="Container">
-              <form className="Address-search">
-                <input type="search"></input>
-              </form>
-              <section className="Address-List" >
-                <AddressList items={items} newItem={item}/>
-              </section>
+              <h3>Поиск посетителей</h3>
+              <AppSearch filterText={filterText} onFilterTextChange={this.onFilterTextChange}/>
+              <h3>Таблица посетителей</h3>
+              <AddressList items={items} filterText={filterText} />
               <nav className="Item-nav">
                 <AddItemButton onModalShow={this.onModalShow} showModal={showModal} name="Добавить запись"/>
               </nav>

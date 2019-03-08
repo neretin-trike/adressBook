@@ -12,6 +12,16 @@ html, body, #root {
   /* --main-color: #cc0041; */
 }
 
+
+.Container {
+  margin: 0 auto;
+  max-width: 657px;
+}
+
+.Container h3 {
+  text-align: left;
+}
+
 .App {
   display: flex;
   flex-direction: column;
@@ -36,16 +46,9 @@ html, body, #root {
   color: white;
 }
 
-.Container {
-  margin: 40px auto;
-  max-width: 657px;
-}
-
-.Address-List {
-
-}
 
 .Address-Table {
+  width: 657px;
   margin: 0 auto;
   border-collapse: collapse;
 }
@@ -144,6 +147,4 @@ html, body, #root {
   color: white;
   padding: 10px;
   padding-right: 35px;
-  margin-bottom: 20px;
-
 }
