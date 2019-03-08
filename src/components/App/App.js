@@ -20,66 +20,8 @@ class AddressItem extends Component {
 }
 
 class AddressList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null,
-      isLoaded: false,
-      items: [],
-    };
-  }
-  componentDidMount() {
-    fetch("http://localhost:22080/api/address/addresses", {method:"GET"})
-      .then( res => res.json() )
-      .then(
-        (result) => {
-          this.setState({
-            isLoaded: true,
-            items: result
-          });
-        },
-        (error) => {
-          this.setState({
-            isLoaded: true,
-            error
-          });
-        }
-      )
-  }
-  addRow(object) {
-    this.props.onAddItem(null);
-
-    let formData = new FormData;
-    formData.append("Index", object.index);
-    formData.append("Name", object.name);
-    formData.append("Surname", object.surname);
-    formData.append("Middlename", object.middlename);
-    formData.append("Address", object.address);
-    formData.append("Phone", object.phone);
-
-    fetch("http://localhost:22080/api/address/add", {method:"POST", body: formData})
-      .then( res => res.json() )
-      .then(
-        (result) => {
-          let items = this.state.items;
-          items.push(object);
-          this.setState({items: items});
-        },
-        (error) => {
-          alert(error);
-        }
-      )
-  }
   render() {
-    const { error, isLoaded, items, newItem } = this.state;
-    if (error) {
-      return <div>Ошибка: {error.message}</div>;
-    } else if (!isLoaded) {
-      return <div>Загрузка...</div>;
-    } else {
-      if (this.props.newItem !== null) {
-        this.addRow(this.props.newItem);
-      }
+      const items = this.props.items;
       return (
         <table className="Address-Table" >
           <thead>
@@ -100,7 +42,6 @@ class AddressList extends Component {
         </table>
       );
     }
-  }
 }
 
 class ModalDialog extends Component {
@@ -189,11 +130,34 @@ class App extends Component {
     this.state = {
       showModal: false,
       item: null,
+
+      error: null,
+      isLoaded: false,
+      items: [],
     };
 
     this.onModalShow = this.onModalShow.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
+  }
+
+  componentDidMount() {
+    fetch("http://localhost:22080/api/address/addresses", {method:"GET"})
+      .then( res => res.json() )
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            items: result
+          });
+        },
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error
+          });
+        }
+      )
   }
 
   onModalClose(){
@@ -203,12 +167,36 @@ class App extends Component {
     this.setState({showModal: true});
   }
   onAddItem(object){
-    this.setState({item: object});
+    let formData = new FormData;
+    formData.append("Index", object.index);
+    formData.append("Name", object.name);
+    formData.append("Surname", object.surname);
+    formData.append("Middlename", object.middlename);
+    formData.append("Address", object.address);
+    formData.append("Phone", object.phone);
+
+    fetch("http://localhost:22080/api/address/add", {method:"POST", body: formData})
+      .then( res => res.json() )
+      .then(
+        (result) => {
+          let items = this.state.items;
+          items.push(object);
+          this.setState({items: items});
+        },
+        (error) => {
+          alert(error);
+        }
+      )
   }
 
   render() {
-    const { showModal, item } = this.state;
-    return (
+    const { showModal, item, error, isLoaded, items, newItem  } = this.state;
+    if (error) {
+      return <div>Ошибка: {error.message}</div>;
+    } else if (!isLoaded) {
+      return <div>Загрузка...</div>;
+    } else {
+      return (
       <div className="App">
         <header className="App-header">
           <h2>Адресная книга посетителей на ReactJS</h2>
@@ -219,7 +207,7 @@ class App extends Component {
                 <input type="search"></input>
               </form>
               <section className="Address-List" >
-                <AddressList onAddItem={this.onAddItem} newItem={item}/>
+                <AddressList items={items} newItem={item}/>
               </section>
               <nav className="Item-nav">
                 <AddItemButton onModalShow={this.onModalShow} showModal={showModal} name="Добавить запись"/>
@@ -231,7 +219,8 @@ class App extends Component {
             <ModalWindow onAddItem={this.onAddItem} onModalClose={this.onModalClose} />
           </ModalDialog>}
       </div>
-    );
+      )
+    }
   }
 }
 

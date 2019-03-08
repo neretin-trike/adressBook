@@ -138,12 +138,12 @@ html, body, #root {
   background-color: transparent;
   background-image: url(../../images/search.svg);
   background-repeat: no-repeat;
-  background-position: 99% center;
+  background-position: 98% center;
   background-size: 2.5%;
 
   color: white;
-  padding: 5px;
-  padding-right: 30px;
+  padding: 10px;
+  padding-right: 35px;
   margin-bottom: 20px;
 
 }
