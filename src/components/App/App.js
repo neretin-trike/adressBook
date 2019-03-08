@@ -5,19 +5,20 @@ import * as ReactRouterDOM from "react-router-dom";
 const Router = ReactRouterDOM.BrowserRouter;
 const Route = ReactRouterDOM.Route;
 const Switch = ReactRouterDOM.Switch;
+const Link = ReactRouterDOM.Link;
 
 class AddressItem extends Component {
   render() {
     const item = this.props.item;
     return (
-      <tr className="Address-Item">
-          <td>{item.index}</td>
-          <td>{item.name}</td>
-          <td>{item.surname}</td>
-          <td>{item.middlename}</td>
-          <td>{item.address}</td>
-          <td>{item.phone}</td>
-      </tr>
+        <tr className="Address-Item">
+            <td><Link to={"/address/"+item.index}>{item.index}</Link></td>
+            <td>{item.name}</td>
+            <td>{item.surname}</td>
+            <td>{item.middlename}</td>
+            <td>{item.address}</td>
+            <td>{item.phone}</td>
+        </tr>
     )
   }
 }
@@ -26,6 +27,8 @@ class AddressList extends Component {
   render() {
       const filterText = this.props.filterText;
       const items = this.props.items;
+
+      console.dir(items);
 
       return (
         <section className="Address-List" >
@@ -247,7 +250,7 @@ class App extends Component {
               <Router>
                 <Switch>
                   <Route exact path="/" children={()=> <AddressList items={items} filterText={filterText} /> } /> 
-                  <Route exact path="/info/" children={()=><h2>Карточка посетителя</h2>} />
+                  <Route exact path="/address/:index" children={()=><h2>Карточка посетителя</h2>} />
                   <Route children={()=><h2>Адрес не найден</h2>} />
                 </Switch>
               </Router>
