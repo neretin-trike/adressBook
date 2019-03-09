@@ -6,6 +6,27 @@ const Router = ReactRouterDOM.BrowserRouter;
 const Route = ReactRouterDOM.Route;
 const Switch = ReactRouterDOM.Switch;
 const Link = ReactRouterDOM.Link;
+const Redirect = ReactRouterDOM.Redirect;
+
+class AppSearch extends Component {
+  constructor(props) {
+    super(props);
+
+    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
+  }
+
+  handleFilterTextChange(e) {
+    this.props.onFilterTextChange(e.target.value);
+  }
+
+  render() {
+    return (
+      <form className="Address-search">
+        <input type="search" value={this.props.filterText} onChange={this.handleFilterTextChange} ></input>
+      </form>
+    )
+  }
+}
 
 class AddressItem extends Component {
   render() {
@@ -55,26 +76,11 @@ class AddressList extends Component {
             </table>
           </div>
           <nav className="Item-nav">
-            <AddItemButton onModalShow={onModalShow} name="Добавить запись"/>
+            <AddItemButton onModalShow={onModalShow} name="Добавить"/>
           </nav>
         </section>
       );
     }
-}
-
-class ModalDialog extends Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
-    const {children} = this.props;
-    return (
-      <div className="Modal-Overlay">
-        {children}
-      </div>
-      )
-  }
-
 }
 
 class AddItemButton extends Component {
@@ -89,6 +95,48 @@ class AddItemButton extends Component {
     return (
       <button onClick={this.onClickHandle} className="Add-Item Button" >{this.props.name}</button>
     )
+  }
+}
+
+class DeleteItemButton extends Component {
+  constructor(props) {
+    super(props);
+    this.onClickHandle = this.onClickHandle.bind(this);
+
+    this.state = {isDelete: false};
+  }
+  onClickHandle(e) {
+    const index = this.props.index;
+    this.props.onDeleteItem(index);
+    this.setState( {isDelete: true});
+  }
+  render() {
+    const isDelete = this.state.isDelete;
+
+    if (isDelete) {
+      return (
+        <Redirect to="/address/" />
+      )
+    } else {
+      return (
+        <button onClick={this.onClickHandle} className="Add-Item Button" >{this.props.name}</button>
+      )
+    }
+  }
+}
+
+
+class ModalDialog extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    const {children} = this.props;
+    return (
+      <div className="Modal-Overlay">
+        {children}
+      </div>
+      )
   }
 }
 
@@ -141,25 +189,6 @@ class ModalWindow extends Component {
   }
 }
 
-class AppSearch extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleFilterTextChange = this.handleFilterTextChange.bind(this);
-  }
-
-  handleFilterTextChange(e) {
-    this.props.onFilterTextChange(e.target.value);
-  }
-
-  render() {
-    return (
-      <form className="Address-search">
-        <input type="search" value={this.props.filterText} onChange={this.handleFilterTextChange} ></input>
-      </form>
-    )
-  }
-}
 
 class AddressItemCard extends Component {
   constructor(props) {
@@ -172,7 +201,6 @@ class AddressItemCard extends Component {
   }
   componentDidMount() {
     const index = this.props.match.params.index;
-    console.log(index);
     fetch("http://localhost:22080/api/address/info?addressIndex="+index, {method:"GET"})
       .then( res => res.json() )
       .then(
@@ -191,7 +219,10 @@ class AddressItemCard extends Component {
       )
   }
   render() {
-    const { error, isLoaded, item } = this.state;
+    const { error, isLoaded, item} = this.state;
+    const {onModalShow, onDeleteItem} = this.props;
+    const index = this.props.match.params.index;
+
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } else if (!isLoaded) {
@@ -226,6 +257,11 @@ class AddressItemCard extends Component {
                 <p className="content">{item.phone}</p> 
               </article>
           </div>
+          <nav className="Item-nav">
+            <Link className="Button" to={"/address/"}>Назад</Link>
+            <DeleteItemButton index={index} onDeleteItem={onDeleteItem} name="Удалить"/>
+            <AddItemButton  onModalShow={onModalShow} name="Редактировать"/>
+          </nav>
         </section>
       )
     }
@@ -249,6 +285,7 @@ class App extends Component {
     this.onModalShow = this.onModalShow.bind(this);
     this.onModalClose = this.onModalClose.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
+    this.onDeleteItem = this.onDeleteItem.bind(this);
     this.onFilterTextChange = this.onFilterTextChange.bind(this);
   }
 
@@ -299,6 +336,22 @@ class App extends Component {
         }
       )
   }
+  onDeleteItem(index) {
+    // alert(index);
+    fetch("http://localhost:22080/api/address/remove?index="+index, {method:"GET"})
+      .then(
+        (result) => {
+          let items = this.state.items;
+          let itemsArr = items.map( e => e.index);
+          let indexFound = itemsArr.indexOf(+index);
+          items.splice(indexFound, 1);
+          this.setState({items: items});
+        },
+        (error) => {
+          alert(error);
+        }
+      )
+  }
   onFilterTextChange(filterText) {
     this.setState({
       filterText: filterText
@@ -322,7 +375,7 @@ class App extends Component {
               <Router>
                 <Switch>
                   <Route exact path="/address" render={()=> <AddressList items={items} onModalShow={this.onModalShow} onFilterTextChange={this.onFilterTextChange} filterText={filterText} /> } /> 
-                  <Route exact path="/address/:index(\d+)" render={(props) => <AddressItemCard {...props}/>} />
+                  <Route exact path="/address/:index(\d+)" render={(props) => <AddressItemCard {...props} onDeleteItem={this.onDeleteItem} onModalShow={this.onModalShow}/>} />
                   <Route children={()=><h3>Адрес не найден</h3>} />
                 </Switch>
               </Router>

@@ -76,6 +76,10 @@ html, body, #root {
   color:white;
   background-color: var(--main-color);
   border-color: transparent;
+
+  margin-left: 10px;
+
+  text-decoration: none;
 }
 
 .Button:hover {
@@ -127,13 +131,6 @@ html, body, #root {
   justify-content: flex-end;
 }
 
-.Modal-Window .Button {
-  margin-left: 10px;
-}
-
-.svg-icon {
-  fill: red;
-}
 
 .Address-search input{
   width: 100%;
