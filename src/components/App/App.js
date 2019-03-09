@@ -25,34 +25,38 @@ class AddressItem extends Component {
 
 class AddressList extends Component {
   render() {
-      const filterText = this.props.filterText;
-      const items = this.props.items;
-
-      console.dir(items);
-
+      const {filterText, items, onFilterTextChange, onModalShow } = this.props;
       return (
-        <section className="Address-List" >
-          <table className="Address-Table" >
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Имя</th>
-                <th>Фамилия</th>
-                <th>Отчество</th>
-                {/* <th>Адрес</th>
-                <th>Номер</th> */}
-              </tr>
-            </thead>
-            <tbody>
-              {items.map(item => {
-                if (item.name.indexOf(filterText) === -1) {
-                  return;
+        <section>
+          <h3>Поиск посетителей</h3>
+          <AppSearch filterText={filterText} onFilterTextChange={onFilterTextChange}/>
+          <h3>Таблица посетителей</h3>
+          <div className="Address-List" >
+            <table className="Address-Table" >
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Имя</th>
+                  <th>Фамилия</th>
+                  <th>Отчество</th>
+                  {/* <th>Адрес</th>
+                  <th>Номер</th> */}
+                </tr>
+              </thead>
+              <tbody>
+                {items.map(item => {
+                  if (item.name.indexOf(filterText) === -1) {
+                    return;
+                  }
+                  return <AddressItem key={item.index} item={item} />
                 }
-                return <AddressItem key={item.index} item={item} />
-              }
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <nav className="Item-nav">
+            <AddItemButton onModalShow={onModalShow} name="Добавить запись"/>
+          </nav>
         </section>
       );
     }
@@ -194,35 +198,35 @@ class AddressItemCard extends Component {
       return <div>Загрузка...</div>;
     } else {
       return (
-        <div>
+        <section>
           <h3>Карточка посетителя</h3>
-          <section className="App-AdreesItemCard">
-          <article className="field">
-              <header className="caption">Индекс</header>
-              <p className="content">{item.index}</p> 
-            </article>
+          <div className="App-AdreesItemCard">
             <article className="field">
-              <header className="caption">Имя</header>
-              <p className="content">{item.name}</p> 
-            </article>
-            <article className="field">
-              <header className="caption">Фамилия</header>
-              <p className="content">{item.surname}</p> 
-            </article>
-            <article className="field">
-              <header className="caption">Отчество</header>
-              <p className="content">{item.middlename}</p> 
-            </article>
-            <article className="field">
-              <header className="caption">Адрес</header>
-              <p className="content">{item.address}</p> 
-            </article>
-            <article className="field">
-              <header className="caption">Телефон</header>
-              <p className="content">{item.phone}</p> 
-            </article>
-          </section>
-        </div>
+                <header className="caption">Индекс</header>
+                <p className="content">{item.index}</p> 
+              </article>
+              <article className="field">
+                <header className="caption">Имя</header>
+                <p className="content">{item.name}</p> 
+              </article>
+              <article className="field">
+                <header className="caption">Фамилия</header>
+                <p className="content">{item.surname}</p> 
+              </article>
+              <article className="field">
+                <header className="caption">Отчество</header>
+                <p className="content">{item.middlename}</p> 
+              </article>
+              <article className="field">
+                <header className="caption">Адрес</header>
+                <p className="content">{item.address}</p> 
+              </article>
+              <article className="field">
+                <header className="caption">Телефон</header>
+                <p className="content">{item.phone}</p> 
+              </article>
+          </div>
+        </section>
       )
     }
   }
@@ -315,20 +319,13 @@ class App extends Component {
         </header>
         <main className="App-main">
           <article className="Container">
-              <h3>Поиск посетителей</h3>
-              <AppSearch filterText={filterText} onFilterTextChange={this.onFilterTextChange}/>
-              <h3>Таблица посетителей</h3>
               <Router>
                 <Switch>
-                  <Route exact path="/address" render={()=> <AddressList items={items} filterText={filterText} /> } /> 
+                  <Route exact path="/address" render={()=> <AddressList items={items} onModalShow={this.onModalShow} onFilterTextChange={this.onFilterTextChange} filterText={filterText} /> } /> 
                   <Route exact path="/address/:index(\d+)" render={(props) => <AddressItemCard {...props}/>} />
-                  <Route children={()=><h2>Адрес не найден</h2>} />
+                  <Route children={()=><h3>Адрес не найден</h3>} />
                 </Switch>
               </Router>
-              {/* <AddressList items={items} filterText={filterText} /> */}
-              <nav className="Item-nav">
-                <AddItemButton onModalShow={this.onModalShow} showModal={showModal} name="Добавить запись"/>
-              </nav>
           </article>
         </main>
         {showModal &&
