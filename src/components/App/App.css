@@ -46,6 +46,11 @@ html, body, #root {
   color: white;
 }
 
+.App-Item-Link {
+  color: var(--main-color);
+  text-decoration: none;
+}
+
 
 .Address-Table {
   width: 657px;

@@ -29,11 +29,23 @@ class AppSearch extends Component {
 }
 
 class AddressItem extends Component {
+  constructor(props) {
+    super(props);
+
+    this.onClickAddressItem = this.onClickAddressItem.bind(this);
+  }
+
+  onClickAddressItem(e) {
+    let target = e.currentTarget;
+    let appItemLink = target.querySelector(".App-Item-Link");
+    appItemLink.click();
+  }
+
   render() {
     const item = this.props.item;
     return (
-        <tr className="Address-Item">
-            <td><Link to={"/address/"+item.index}>{item.index}</Link></td>
+        <tr onClick={this.onClickAddressItem} className="Address-Item">
+            <td><Link className="App-Item-Link" to={"/address/"+item.index}>{item.index}</Link></td>
             <td>{item.name}</td>
             <td>{item.surname}</td>
             <td>{item.middlename}</td>
@@ -74,7 +86,9 @@ class AddressList extends Component {
               </thead>
               <tbody>
                 {items.map(item => {
-                  if (item.name.indexOf(filterText) === -1) {
+                  if (item.name.indexOf(filterText) === -1 && 
+                      item.surname.indexOf(filterText) === -1 &&
+                      item.middlename.indexOf(filterText) === -1) {
                     return;
                   }
                   return <AddressItem key={item.index} item={item} />
