@@ -98,7 +98,7 @@ class AddItemButton extends Component {
   }
   onClickHandle(e) {
     let item = this.props.item;
-    this.props.onModalShow(item);
+    this.props.onModalShow(item, {title: "Добавить новую", isEdit: false});
   }
   render() {
     return (
@@ -114,7 +114,7 @@ class EditItemButton extends Component {
   }
   onClickHandle(e) {
     let item = this.props.item;
-    this.props.onModalShow(item);
+    this.props.onModalShow(item, {title: "Редактировать", isEdit: true});
   }
   render() {
     return (
@@ -202,7 +202,7 @@ class ModalWindow extends Component {
     e.preventDefault();
   }
   render() {
-    const title = this.props.title;
+    const {title, isEdit} = this.props.modalWindowType;
     return (
       <section className="Modal-Window">
         <h3>{title} запись</h3>
@@ -214,8 +214,10 @@ class ModalWindow extends Component {
           <label>Номер<input name="phone" value={this.state.phone} onChange={this.onInputChange}/></label>
           <nav className="ModalBtn-nav">
             <input className="Button" type="button" onClick={this.onClickHandle} value="Закрыть"/>
-            <input className="Button" type="submit" onClick={this.onAddItem} value="Добавить"/>
-            <input className="Button" type="submit" onClick={this.onEditItem} value="Сохранить"/>
+            {isEdit?
+              <input className="Button" type="submit" onClick={this.onEditItem} value="Сохранить"/> :
+              <input className="Button" type="submit" onClick={this.onAddItem} value="Добавить"/>
+            }
           </nav>
         </form>
       </section>
@@ -307,7 +309,8 @@ class App extends Component {
 
     this.state = {
       showModal: false,
-      modalFields: null,
+      modalFields: {},
+      modalWindowType: {},
 
       error: null,
       isLoaded: false,
@@ -344,10 +347,14 @@ class App extends Component {
   }
 
   onModalClose(){
-    this.setState({showModal: false, modalFields:null});
+    this.setState({showModal: false, modalFields:{}, modalWindowType: {}});
   }
-  onModalShow(object){
-    this.setState({showModal: true, modalFields:object});
+  onModalShow(object, mwinType){
+    this.setState({
+        showModal: true, 
+        modalFields:object, 
+        modalWindowType: mwinType
+      });
   }
   onAddItem(object){
     let formData = new FormData;
@@ -401,8 +408,8 @@ class App extends Component {
         (result) => {
           let items = this.state.items;
           let itemsArr = items.map( e => e.index);
-          let indexFound = itemsArr.indexOf(+result.index);
-          items[indexFound] = result;
+          let indexFound = itemsArr.indexOf(+object.index);
+          items[indexFound] = object;
           this.setState({items: items});
         },
         (error) => {
@@ -417,7 +424,7 @@ class App extends Component {
   }
 
   render() {
-    const { showModal, modalFields, filterText, error, isLoaded, items } = this.state;
+    const { showModal, modalFields, modalWindowType, filterText, error, isLoaded, items } = this.state;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } else if (!isLoaded) {
@@ -441,7 +448,7 @@ class App extends Component {
         </main>
         {showModal &&
           <ModalDialog>
-            <ModalWindow title="Добавить новую" modalFields={modalFields} onAddItem={this.onAddItem} onEditItem={this.onEditItem} onModalClose={this.onModalClose} />
+            <ModalWindow modalWindowType={modalWindowType} modalFields={modalFields} onAddItem={this.onAddItem} onEditItem={this.onEditItem} onModalClose={this.onModalClose} />
           </ModalDialog>}
       </div>
       )
