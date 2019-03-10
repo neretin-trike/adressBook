@@ -251,7 +251,9 @@ class AddressItemCard extends Component {
   }
   componentDidMount() {
     const index = this.props.match.params.index;
-    fetch("http://localhost:22080/api/address/info?addressIndex="+index, {method:"GET"})
+    let formData = new FormData();
+    formData.append("addressIndex", index)
+    fetch("http://localhost:22080/api/address/info", {method:"POST",body: formData})
       .then( res => res.json() )
       .then(
         (result) => {
@@ -393,7 +395,9 @@ class App extends Component {
       )
   }
   onDeleteItem(index) {
-    fetch("http://localhost:22080/api/address/remove?index="+index, {method:"GET"})
+    let formData = new FormData();
+    formData.append("index", index);
+    fetch("http://localhost:22080/api/address/remove", {method:"POST", body: formData})
       .then(
         (result) => {
           let items = this.state.items;
