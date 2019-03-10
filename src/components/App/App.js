@@ -47,6 +47,14 @@ class AddressItem extends Component {
 class AddressList extends Component {
   render() {
       const {filterText, items, onFilterTextChange, onModalShow } = this.props;
+      let item = {
+        index: items.length+1,
+        name: "",
+        surname: "",
+        middlename: "",
+        address: "",
+        phone: ""
+      };
       return (
         <section>
           <h3>Поиск посетителей</h3>
@@ -76,7 +84,7 @@ class AddressList extends Component {
             </table>
           </div>
           <nav className="Item-nav">
-            <AddItemButton onModalShow={onModalShow} name="Добавить"/>
+            <AddItemButton item={item} onModalShow={onModalShow} name="Добавить"/>
           </nav>
         </section>
       );
@@ -89,11 +97,28 @@ class AddItemButton extends Component {
     this.onClickHandle = this.onClickHandle.bind(this);
   }
   onClickHandle(e) {
-    this.props.onModalShow();
+    let item = this.props.item;
+    this.props.onModalShow(item);
   }
   render() {
     return (
-      <button onClick={this.onClickHandle} className="Add-Item Button" >{this.props.name}</button>
+      <button onClick={this.onClickHandle} className="Button" >{this.props.name}</button>
+    )
+  }
+}
+
+class EditItemButton extends Component {
+  constructor(props) {
+    super(props);
+    this.onClickHandle = this.onClickHandle.bind(this);
+  }
+  onClickHandle(e) {
+    let item = this.props.item;
+    this.props.onModalShow(item);
+  }
+  render() {
+    return (
+      <button onClick={this.onClickHandle} className="Button" >{this.props.name}</button>
     )
   }
 }
@@ -146,14 +171,16 @@ class ModalWindow extends Component {
     this.onClickHandle = this.onClickHandle.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
+    this.onEditItem = this.onEditItem.bind(this);
 
+    let item = this.props.modalFields;
     this.state = {
-      index: Math.round(Math.random()*(1000-1)+1),
-      name: "1",
-      surname: "2",
-      middlename: "3",
-      address: "4",
-      phone: "5"
+      index: item.index,
+      name: item.name,
+      surname: item.surname,
+      middlename: item.middlename,
+      address: item.address,
+      phone: item.phone
     }
   }
   onInputChange(event) {
@@ -169,10 +196,16 @@ class ModalWindow extends Component {
     this.props.onModalClose();
     e.preventDefault();
   }
+  onEditItem(e) {
+    this.props.onEditItem(this.state);
+    this.props.onModalClose();
+    e.preventDefault();
+  }
   render() {
+    const title = this.props.title;
     return (
       <section className="Modal-Window">
-        <h3>Добавить новую запись</h3>
+        <h3>{title} запись</h3>
         <form>
           <label>Имя<input name="name" value={this.state.name} onChange={this.onInputChange}/></label>
           <label>Фамилия<input name="surname" value={this.state.surname} onChange={this.onInputChange}/></label>
@@ -182,6 +215,7 @@ class ModalWindow extends Component {
           <nav className="ModalBtn-nav">
             <input className="Button" type="button" onClick={this.onClickHandle} value="Закрыть"/>
             <input className="Button" type="submit" onClick={this.onAddItem} value="Добавить"/>
+            <input className="Button" type="submit" onClick={this.onEditItem} value="Сохранить"/>
           </nav>
         </form>
       </section>
@@ -221,7 +255,6 @@ class AddressItemCard extends Component {
   render() {
     const { error, isLoaded, item} = this.state;
     const {onModalShow, onDeleteItem} = this.props;
-    const index = this.props.match.params.index;
 
     if (error) {
       return <div>Ошибка: {error.message}</div>;
@@ -259,8 +292,8 @@ class AddressItemCard extends Component {
           </div>
           <nav className="Item-nav">
             <Link className="Button" to={"/address/"}>Назад</Link>
-            <DeleteItemButton index={index} onDeleteItem={onDeleteItem} name="Удалить"/>
-            <AddItemButton  onModalShow={onModalShow} name="Редактировать"/>
+            <DeleteItemButton index={item.index} onDeleteItem={onDeleteItem} name="Удалить"/>
+            <EditItemButton  item={item} onModalShow={onModalShow} name="Редактировать"/>
           </nav>
         </section>
       )
@@ -274,6 +307,7 @@ class App extends Component {
 
     this.state = {
       showModal: false,
+      modalFields: null,
 
       error: null,
       isLoaded: false,
@@ -286,6 +320,7 @@ class App extends Component {
     this.onModalClose = this.onModalClose.bind(this);
     this.onAddItem = this.onAddItem.bind(this);
     this.onDeleteItem = this.onDeleteItem.bind(this);
+    this.onEditItem = this.onEditItem.bind(this);
     this.onFilterTextChange = this.onFilterTextChange.bind(this);
   }
 
@@ -309,10 +344,10 @@ class App extends Component {
   }
 
   onModalClose(){
-    this.setState({showModal: false});
+    this.setState({showModal: false, modalFields:null});
   }
-  onModalShow(){
-    this.setState({showModal: true});
+  onModalShow(object){
+    this.setState({showModal: true, modalFields:object});
   }
   onAddItem(object){
     let formData = new FormData;
@@ -337,7 +372,6 @@ class App extends Component {
       )
   }
   onDeleteItem(index) {
-    // alert(index);
     fetch("http://localhost:22080/api/address/remove?index="+index, {method:"GET"})
       .then(
         (result) => {
@@ -352,6 +386,30 @@ class App extends Component {
         }
       )
   }
+  onEditItem(object) {
+    let formData = new FormData;
+    formData.append("Index", object.index);
+    formData.append("Name", object.name);
+    formData.append("Surname", object.surname);
+    formData.append("Middlename", object.middlename);
+    formData.append("Address", object.address);
+    formData.append("Phone", object.phone);
+    
+    fetch("http://localhost:22080/api/address/change", {method:"POST", body: formData})
+      .then( res => res.json() )
+      .then(
+        (result) => {
+          let items = this.state.items;
+          let itemsArr = items.map( e => e.index);
+          let indexFound = itemsArr.indexOf(+result.index);
+          items[indexFound] = result;
+          this.setState({items: items});
+        },
+        (error) => {
+          alert(error);
+        }
+      )
+  }
   onFilterTextChange(filterText) {
     this.setState({
       filterText: filterText
@@ -359,7 +417,7 @@ class App extends Component {
   }
 
   render() {
-    const { showModal, filterText, error, isLoaded, items } = this.state;
+    const { showModal, modalFields, filterText, error, isLoaded, items } = this.state;
     if (error) {
       return <div>Ошибка: {error.message}</div>;
     } else if (!isLoaded) {
@@ -383,7 +441,7 @@ class App extends Component {
         </main>
         {showModal &&
           <ModalDialog>
-            <ModalWindow onAddItem={this.onAddItem} onModalClose={this.onModalClose} />
+            <ModalWindow title="Добавить новую" modalFields={modalFields} onAddItem={this.onAddItem} onEditItem={this.onEditItem} onModalClose={this.onModalClose} />
           </ModalDialog>}
       </div>
       )
