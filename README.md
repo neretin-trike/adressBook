@@ -22,4 +22,4 @@
 Страница пезегразутися, если вы сохраните изменения. <br>
 В случае ошибки линтер отправит уведомление в консоль.
 
-
+![](https://github.com/neretin-trike/adressBook/blob/master/screenshot.PNG)
